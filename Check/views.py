@@ -16,6 +16,9 @@ def index(request):
         print request
         print "="*1000
         afile = request.FILES['file1']
+        #Check if file is PDF and Convert to text using method defined below
+        if afile[-3:]=='pdf':
+            afile = convert_pdf_to_txt(afile)
         print afile.name,afile.read()
         instance = Tuple(file1 = request.FILES['file1'], file2 = request.FILES['file2'])
         instance.save();
@@ -237,3 +240,31 @@ def get_html_markup(a,b):
 #     diffPercentage = fileRatio*100
 #     return diffPercentage
 
+from pdfminer.pdfinterp import PDFResourceManager, PDFPageInterpreter
+from pdfminer.converter import TextConverter
+from pdfminer.layout import LAParams
+from pdfminer.pdfpage import PDFPage
+from cStringIO import StringIO
+
+def convert_pdf_to_txt(path):
+    rsrcmgr = PDFResourceManager()
+    retstr = StringIO()
+    codec = 'utf-8'
+    laparams = LAParams()
+    device = TextConverter(rsrcmgr, retstr, codec=codec, laparams=laparams)
+    fp = file(path, 'rb')
+    interpreter = PDFPageInterpreter(rsrcmgr, device)
+    password = ""
+    maxpages = 0
+    caching = True
+    pagenos=set()
+
+    for page in PDFPage.get_pages(fp, pagenos, maxpages=maxpages, password=password,caching=caching, check_extractable=True):
+        interpreter.process_page(page)
+
+    text = retstr.getvalue()
+
+    fp.close()
+    device.close()
+    retstr.close()
+    return text
