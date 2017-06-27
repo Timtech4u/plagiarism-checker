@@ -17,8 +17,8 @@ def index(request):
         print "="*1000
         afile = request.FILES['file1']
         #Check if file is PDF and Convert to text using method defined below
-        if afile[-3:]=='pdf':
-            afile = convert_pdf_to_txt(afile)
+        # if afile[-3:]=='pdf':
+        #     afile = convert_pdf_to_txt(afile)
         print afile.name,afile.read()
         instance = Tuple(file1 = request.FILES['file1'], file2 = request.FILES['file2'])
         instance.save();
