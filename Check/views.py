@@ -26,8 +26,13 @@ def index(request):
         file1 = str(instance.file1)[2:]
         file2 = str(instance.file2)[2:]
         dire = str(settings.MEDIA_ROOT)
+        #Used to truncate strings
         ccod1 = open(dire+file1).read().split('\n')
+        if len(ccod1)>=100:
+            ccod1 = ccod1[:100]
         ccod2 = open(dire+file2).read().split('\n')
+        if len(ccod2)>=100:
+            ccod2 = ccod2[:100]
         datastuff = process_it(file1, file2, dire)
         # ddifference = difference(file1, file2, dire)
         data1 = open(dire+file1).read()
